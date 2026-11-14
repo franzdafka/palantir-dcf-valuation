@@ -1,0 +1,50 @@
+{
+  "market_price": 144.45,
+  "base_gordon_value": 45.73,
+  "checks_vs_workbook": {
+    "gordon": [
+      45.731,
+      45.731
+    ],
+    "exit_low": [
+      67.178,
+      67.178
+    ],
+    "exit_high": [
+      114.647,
+      114.647
+    ]
+  },
+  "levers": [
+    {
+      "lever": "WACC",
+      "base": 0.112844342898094,
+      "implied": 0.057592798056277456
+    },
+    {
+      "lever": "Terminal growth g",
+      "base": 0.03,
+      "implied": 0.0961519397547859
+    },
+    {
+      "lever": "Revenue CAGR FY26-FY36",
+      "base": 0.1846809946065877,
+      "implied": 0.3684332269329935
+    },
+    {
+      "lever": "Year-10 revenue ($bn)",
+      "base": 44.40019934656785,
+      "implied": 187.76161606812036
+    },
+    {
+      "lever": "Terminal EBIT margin",
+      "base": 0.42,
+      "implied": 1.64563234478946
+    },
+    {
+      "lever": "Exit EV/Sales on Year-10 revenue",
+      "base": null,
+      "implied": 20.52256466917578
+    }
+  ]
+}

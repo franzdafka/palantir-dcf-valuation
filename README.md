@@ -6,6 +6,23 @@ A bottom-up, 10-year discounted cash flow model, built as a portfolio piece for 
 
 ---
 
+## TL;DR
+
+| | Bear | Base | Bull | Market (Aug 3, 2026, after-hours) |
+|---|---|---|---|---|
+| Value per share (blended) | $43.22 | $68.32 | $115.75 | **$144.45** |
+
+- Even the Bull case is about 20% below the post-earnings price.
+- **Reverse DCF** (holding everything else at Base): to justify $144.45, the market has to be pricing in one of the following:
+  - a WACC of **5.8%** instead of 11.3%, which implies a beta of about 0.25 instead of 1.56;
+  - revenue growth of **37% a year for ten years** instead of 18.5% (FY2036 revenue of $188bn instead of $44bn);
+  - an exit multiple of **20.5x EV/Sales** in 2036, above today's premium-software peers.
+- Expensing stock-based compensation, rather than adding it back, lowers the Base Gordon value by 18% ($56.06 → $45.73).
+
+![Sensitivity](docs/sensitivity_wacc_g.png)
+
+---
+
 ## Executive Summary
 
 | Scenario | Estimated intrinsic value per share (blended) |
@@ -106,6 +123,27 @@ Tax rate (25%), D&A (2.0% of revenue), capex (2.0% of revenue), and incremental-
 
 ---
 
+## 4b. Reverse DCF: what the market price implies
+
+`analysis/reverse_dcf.py` rebuilds the Base case in Python from the workbook's own inputs. It matches the workbook to the cent: $45.73 Gordon, $67.18 and $114.65 exit-multiple values. It then solves for the single assumption that makes the Gordon Growth value equal the $144.45 market price, holding everything else at Base:
+
+| Lever | Base case | Implied by $144.45 | Plausible? |
+|---|---|---|---|
+| WACC | 11.3% | 5.8% | Needs a beta of about 0.25 (risk-free 4.69%, ERP 4.23%). The observed range is 1.56–2.02. |
+| Terminal growth g | 3.0% | 9.6% | Above any sensible long-run nominal GDP growth, forever. |
+| Revenue CAGR, FY2026–FY2036 | 18.5% | 36.8% | Revenue of $188bn in FY2036, versus $44bn in Base. |
+| Terminal EBIT margin | 42% | 165% | Impossible: no margin alone can close the gap. |
+| Exit EV/Sales on FY2036 revenue | 7.5x–15.5x | 20.5x | A premium-growth multiple ten years from now, after growth has faded to about 9%. |
+
+No single lever closes the gap at a plausible value. The price makes sense only if several assumptions are more optimistic at once, for example faster growth *and* a lower discount rate *and* a premium terminal multiple. That combination is the actual bet.
+
+```bash
+pip install openpyxl numpy scipy matplotlib
+python analysis/reverse_dcf.py   # writes analysis/reverse_dcf.json and docs/sensitivity_wacc_g.png
+```
+
+---
+
 ## 5. Limitations — what could make this valuation wrong
 
 - **Beta dispersion (1.56–2.02)** is the single largest source of uncertainty in the WACC, and WACC is the single largest lever on the output given the 10-year discounting horizon. See the WACC × g sensitivity grid.
@@ -148,6 +186,11 @@ Full detail and exact source citations for every correction are in `/data/histor
   /data
     historical_financials.csv     — FY2022-Q2 2026 financials, sourced line-by-line
     market_and_wacc_inputs.csv    — market data, CAPM inputs, peer multiples, sourced
+  /analysis
+    reverse_dcf.py                — Base case rebuilt in Python, checked against the workbook; reverse DCF
+    reverse_dcf.json              — implied WACC, g, revenue CAGR, margin and exit multiple
+  /docs
+    sensitivity_wacc_g.png        — value per share across WACC x terminal growth
   README.md                       — this file
 ```
 
